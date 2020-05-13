@@ -65,7 +65,29 @@ class MainEntityItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return ListTile(
+
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EntityDetaling(_mainEntity);
+        }));
+      },
       title: Text(_mainEntity.title),
+      leading: Icon(Icons.pages),
+    );
+  }
+}
+
+class EntityDetaling extends StatelessWidget {
+  final MainEntity _mainEntity;
+
+  EntityDetaling(this._mainEntity);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_mainEntity.title),
+      ),
     );
   }
 }
