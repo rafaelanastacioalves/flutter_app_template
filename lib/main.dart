@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'database/DAO.dart';
+import 'database/MainEntityDAO.dart';
 import 'models/MainEntity.dart';
 import 'screens/main_entity_listing/MainEntityListing.dart';
 
