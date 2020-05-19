@@ -1,35 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app_template/database/DAO.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
 import 'package:flutter_app_template/screens/entity_detailing/EntityDetailing.dart';
 
 final _appBarTitle = "APP_NAME";
 
-class MainEntityListing extends StatefulWidget {
-  final List<MainEntity> mainEntityList = [
-    MainEntity("Number 1"),
-    MainEntity("Number 2")
-  ];
+class MainEntityListing extends StatelessWidget {
+  final _dao = DAO();
 
-  @override
-  State<StatefulWidget> createState() {
-    return MainEntityListingState();
-  }
-}
-
-class MainEntityListingState extends State<MainEntityListing> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(_appBarTitle),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          final mainEntity = widget.mainEntityList[index];
-          return MainEntityItem(mainEntity);
+      body: FutureBuilder<List<MainEntity>>(
+        initialData: List<MainEntity>(),
+        future: _dao.findAll(),
+        builder: (buildContext, asyncSnapshotBuilder) {
+          switch (asyncSnapshotBuilder.connectionState) {
+            case ConnectionState.none:
+              break;
+            case ConnectionState.waiting:
+              return LoadingScreen();
+              break;
+            case ConnectionState.active:
+              break;
+            case ConnectionState.done:
+              final List<MainEntity> mainEntityList = asyncSnapshotBuilder.data;
+              return ListView.builder(
+                itemBuilder: (context, index) {
+                  final mainEntity = mainEntityList[index];
+                  return MainEntityItem(mainEntity);
+                },
+                itemCount: mainEntityList.length,
+              );
+              break;
+          }
+          return Text("Unknown Error");
         },
-        itemCount: widget.mainEntityList.length,
+      ),
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[CircularProgressIndicator(), Text('Carregando')],
       ),
     );
   }
