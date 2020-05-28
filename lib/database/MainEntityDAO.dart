@@ -3,20 +3,24 @@ import 'package:flutter_app_template/models/MainEntity.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DAO {
-  final _main_entitiy_table_name = 'main_entity';
-  final _id = 'id';
-  final _title = 'title';
+  static const main_entitiy_table_name = 'main_entity';
+  static const _id = 'id';
+  static const _title = 'title';
+  static const creationStatement = "CREATE TABLE $main_entitiy_table_name("
+      "$_id INTEGER PRIMARY KEY, "
+      "$_title TEXT"
+      ")";
 
   Future<int> save(MainEntity mainEntity) async {
     final Database db = await getDatabase();
     Map<String, dynamic> mainEntityMap = _toMap(mainEntity);
-    return db.insert(_main_entitiy_table_name, mainEntityMap);
+    return db.insert(main_entitiy_table_name, mainEntityMap);
   }
 
   Future<List<MainEntity>> findAll() async {
     final Database db = await getDatabase();
     List<Map<String, dynamic>> mainEntityListMap =
-        await db.query(_main_entitiy_table_name);
+        await db.query(main_entitiy_table_name);
     List<MainEntity> mainEntityList = _toList(mainEntityListMap);
     return mainEntityList;
   }

@@ -28,14 +28,21 @@ class MainEntityListing extends StatelessWidget {
             case ConnectionState.active:
               break;
             case ConnectionState.done:
-              final List<MainEntity> mainEntityList = asyncSnapshotBuilder.data;
-              return ListView.builder(
-                itemBuilder: (context, index) {
-                  final mainEntity = mainEntityList[index];
-                  return MainEntityItem(mainEntity);
-                },
-                itemCount: mainEntityList.length,
-              );
+              if (asyncSnapshotBuilder.hasData) {
+                final List<MainEntity> mainEntityList = asyncSnapshotBuilder.data;
+                if (mainEntityList.isNotEmpty){
+                  return ListView.builder(
+                    itemBuilder: (context, index) {
+                      final mainEntity = mainEntityList[index];
+                      return MainEntityItem(mainEntity);
+                    },
+                    itemCount: mainEntityList.length,
+                  );
+                }else{
+                  return Text("No Entity Found");
+                }
+
+              }
               break;
           }
           return Text("Unknown Error");
