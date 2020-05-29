@@ -1,11 +1,10 @@
-import 'package:flutter_app_template/database/MainEntityDAO.dart';
+import 'package:flutter_app_template/database/main_entity_dao.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 Future<Database> getDatabase() async {
-
-
   final _dbName = 'app_name.db';
+
   final String path = join(await getDatabasesPath(), _dbName);
   return openDatabase(
     path,
@@ -14,6 +13,5 @@ Future<Database> getDatabase() async {
     },
     version: 1,
   );
-
 
 }

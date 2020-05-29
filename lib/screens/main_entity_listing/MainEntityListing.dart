@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_app_template/database/MainEntityDAO.dart';
-import 'package:flutter_app_template/http/http_client.dart';
+import 'package:flutter_app_template/http/web_clients/web_client.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
 import 'package:flutter_app_template/screens/entity_detailing/EntityDetailing.dart';
 
 final _appBarTitle = "APP_NAME";
 
 class MainEntityListing extends StatelessWidget {
-  final http_client = HttpClient();
+  final httpClient = WebClient();
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class MainEntityListing extends StatelessWidget {
       ),
       body: FutureBuilder<List<MainEntity>>(
         initialData: List<MainEntity>(),
-        future: http_client.getMainEntityList(),
+        future: httpClient.getMainEntityList(),
         builder: (buildContext, asyncSnapshotBuilder) {
           switch (asyncSnapshotBuilder.connectionState) {
             case ConnectionState.none:
@@ -42,7 +41,8 @@ class MainEntityListing extends StatelessWidget {
                 }else{
                   return Text("No Entity Found");
                 }
-
+              }else if (asyncSnapshotBuilder.hasError){
+                return Text(asyncSnapshotBuilder.error.toString());
               }
               break;
           }
