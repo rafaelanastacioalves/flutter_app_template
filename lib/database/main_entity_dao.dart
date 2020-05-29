@@ -13,7 +13,7 @@ class DAO {
 
   Future<int> save(MainEntity mainEntity) async {
     final Database db = await getDatabase();
-    Map<String, dynamic> mainEntityMap = _toMap(mainEntity);
+    Map<String, dynamic> mainEntityMap = mainEntity.toJson();
     return db.insert(main_entitiy_table_name, mainEntityMap);
   }
 
@@ -21,22 +21,8 @@ class DAO {
     final Database db = await getDatabase();
     List<Map<String, dynamic>> mainEntityListMap =
         await db.query(main_entitiy_table_name);
-    List<MainEntity> mainEntityList = _toList(mainEntityListMap);
-    return mainEntityList;
-  }
-
-  Map<String, dynamic> _toMap(MainEntity mainEntity) {
-    var map = Map<String, dynamic>();
-    map[_title] = mainEntity.title;
-    return map;
-  }
-
-  List<MainEntity> _toList(List<Map<String, dynamic>> mainEntityListMap) {
-    List<MainEntity> mainEntityList = List<MainEntity>();
-    mainEntityListMap.forEach((mapItem) {
-      MainEntity mainEntity = MainEntity(id: mapItem[_id],title: mapItem[_title]);
-      mainEntityList.add(mainEntity);
-    });
+    List<MainEntity> mainEntityList =
+        mainEntityListMap.map((item) => MainEntity.fromJson(item));
     return mainEntityList;
   }
 }

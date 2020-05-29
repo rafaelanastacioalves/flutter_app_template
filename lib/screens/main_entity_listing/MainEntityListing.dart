@@ -15,39 +15,42 @@ class MainEntityListing extends StatelessWidget {
       appBar: AppBar(
         title: Text(_appBarTitle),
       ),
-      body: FutureBuilder<List<MainEntity>>(
-        initialData: List<MainEntity>(),
-        future: httpClient.getMainEntityList(),
-        builder: (buildContext, asyncSnapshotBuilder) {
-          switch (asyncSnapshotBuilder.connectionState) {
-            case ConnectionState.none:
-              break;
-            case ConnectionState.waiting:
-              return LoadingScreen();
-              break;
-            case ConnectionState.active:
-              break;
-            case ConnectionState.done:
-              if (asyncSnapshotBuilder.hasData) {
-                final List<MainEntity> mainEntityList = asyncSnapshotBuilder.data;
-                if (mainEntityList.isNotEmpty){
-                  return ListView.builder(
-                    itemBuilder: (context, index) {
-                      final mainEntity = mainEntityList[index];
-                      return MainEntityItem(mainEntity);
-                    },
-                    itemCount: mainEntityList.length,
-                  );
-                }else{
-                  return Text("No Entity Found");
+      body: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: FutureBuilder<List<MainEntity>>(
+          initialData: List<MainEntity>(),
+          future: httpClient.getMainEntityList(),
+          builder: (buildContext, asyncSnapshotBuilder) {
+            switch (asyncSnapshotBuilder.connectionState) {
+              case ConnectionState.none:
+                break;
+              case ConnectionState.waiting:
+                return LoadingScreen();
+                break;
+              case ConnectionState.active:
+                break;
+              case ConnectionState.done:
+                if (asyncSnapshotBuilder.hasData) {
+                  final List<MainEntity> mainEntityList = asyncSnapshotBuilder.data;
+                  if (mainEntityList.isNotEmpty){
+                    return ListView.builder(
+                      itemBuilder: (context, index) {
+                        final mainEntity = mainEntityList[index];
+                        return MainEntityItem(mainEntity);
+                      },
+                      itemCount: mainEntityList.length,
+                    );
+                  }else{
+                    return Text("No Entity Found");
+                  }
+                }else if (asyncSnapshotBuilder.hasError){
+                  return Text(asyncSnapshotBuilder.error.toString());
                 }
-              }else if (asyncSnapshotBuilder.hasError){
-                return Text(asyncSnapshotBuilder.error.toString());
-              }
-              break;
-          }
-          return Text("Unknown Error");
-        },
+                break;
+            }
+            return Text("Unknown Error");
+          },
+        ),
       ),
     );
   }
@@ -77,14 +80,26 @@ class MainEntityItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    return Material(
+        child: InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return EntityDetaling(_mainEntity);
         }));
       },
-      title: Text(_mainEntity.title),
-      leading: Icon(Icons.pages),
-    );
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              Image.network(
+                _mainEntity.image_url,
+              ),
+              Text(_mainEntity.title),
+            ],
+          ),
+        ),
+      ),
+    ));
   }
 }
