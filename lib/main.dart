@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'database/MainEntityDAO.dart';
-import 'models/MainEntity.dart';
 import 'screens/main_entity_listing/MainEntityListing.dart';
 
 void main() {
   runApp(AppTemplate());
-  final DAO dao = DAO();
-  dao.save(MainEntity(title: "Number1"));
-  dao.save(MainEntity(title: "Number2"));
 }
 //
 class AppTemplate extends StatelessWidget {
