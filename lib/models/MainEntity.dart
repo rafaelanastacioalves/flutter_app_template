@@ -1,6 +1,14 @@
 class MainEntity {
   final String title;
-  int id ;
-  MainEntity({String this.title = "default title", int this.id});
+  final String id ;
+  MainEntity({String this.title = "default title", this.id});
 
+  MainEntity.fromJson(Map<String, dynamic> json) :
+    id =  json['id'],
+    title = json['title'];
+
+  Map<String, dynamic> toJson() => {
+    'id' : id,
+    'title' : title
+  };
 }

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_template/database/MainEntityDAO.dart';
+import 'package:flutter_app_template/http/http_client.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
 import 'package:flutter_app_template/screens/entity_detailing/EntityDetailing.dart';
 
 final _appBarTitle = "APP_NAME";
 
 class MainEntityListing extends StatelessWidget {
-  final _dao = DAO();
+  final http_client = HttpClient();
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class MainEntityListing extends StatelessWidget {
       ),
       body: FutureBuilder<List<MainEntity>>(
         initialData: List<MainEntity>(),
-        future: _dao.findAll(),
+        future: http_client.getMainEntityList(),
         builder: (buildContext, asyncSnapshotBuilder) {
           switch (asyncSnapshotBuilder.connectionState) {
             case ConnectionState.none:
