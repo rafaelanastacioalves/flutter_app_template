@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_template/http/web_clients/web_client.dart';
 import 'package:flutter_app_template/models/EntityDetails.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
+import 'package:flutter_app_template/repository/http/web_clients/web_client.dart';
 import 'package:flutter_app_template/screens/main_entity_listing/MainEntityListing.dart';
 
 class EntityDetaling extends StatelessWidget {

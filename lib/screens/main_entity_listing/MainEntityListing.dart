@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_app_template/http/web_clients/web_client.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
+import 'package:flutter_app_template/repository/http/web_clients/web_client.dart';
 import 'package:flutter_app_template/screens/entity_detailing/EntityDetailing.dart';
 
 final _appBarTitle = "APP_NAME";
