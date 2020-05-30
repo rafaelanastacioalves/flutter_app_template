@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter_app_template/http/http_config.dart';
+import 'package:flutter_app_template/models/EntityDetails.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
 
 class WebClient {
@@ -19,4 +20,19 @@ class WebClient {
     }
 
   }
+
+  Future<EntityDetails> getEntityDetail(String packageID) async {
+    final String endPoint = "/trip-packages/$packageID";
+    String finalUrl = Http.url + endPoint;
+    final response = await Http.client.post(finalUrl);
+
+    if (response.statusCode == 200){
+      final dynamic decodedJson = json.decode(response.body);
+      return EntityDetails.fromJson(decodedJson);
+    }else{
+      throw Exception("Http Exception");
+    }
+
+  }
+
 }
