@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_template/models/EntityDetails.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
+import 'package:flutter_app_template/models/Resource.dart';
+import 'package:flutter_app_template/repository/Repository.dart';
 import 'package:flutter_app_template/repository/http/web_clients/web_client.dart';
 import 'package:flutter_app_template/screens/main_entity_listing/MainEntityListing.dart';
 
@@ -9,7 +11,7 @@ class EntityDetaling extends StatelessWidget {
 
   final MainEntity _mainEntity;
 
-  final httpClient = WebClient();
+  final repository = AppRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,10 @@ class EntityDetaling extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 8.0),
-        child: FutureBuilder<EntityDetails>(
-          future: httpClient.getEntityDetail(_mainEntity.id),
-          builder: (buildContext, asyncSnapshotBuilder) {
-            switch (asyncSnapshotBuilder.connectionState) {
+        child: FutureBuilder<Resource<EntityDetails>>(
+          future: repository.getEntityDetails(_mainEntity.id),
+          builder: (buildContext, asyncSnapshot) {
+            switch (asyncSnapshot.connectionState) {
               case ConnectionState.none:
                 break;
               case ConnectionState.waiting:
@@ -31,11 +33,25 @@ class EntityDetaling extends StatelessWidget {
               case ConnectionState.active:
                 break;
               case ConnectionState.done:
-                if (asyncSnapshotBuilder.hasData) {
-                  final EntityDetails entityDetails = asyncSnapshotBuilder.data;
-                  return EntityDetaisScreen(entityDetails);
-                } else if (asyncSnapshotBuilder.hasError) {
-                  return Text(asyncSnapshotBuilder.error.toString());
+                if (asyncSnapshot.hasData) {
+                  final Resource<EntityDetails> resource = asyncSnapshot.data;
+              switch (resource.status) {
+
+                case Status.SUCCESS:
+                  return EntityDetaisScreen(resource.data);
+                  break;
+                case Status.INTERNAL_SERVER_ERROR:
+                  return Text(resource.message);
+                  break;
+                case Status.GENERIC_ERROR:
+                  return Text(resource.message);
+                  break;
+                case Status.LOADING:
+                  return Text(resource.message);
+                  break;
+              };
+                } else if (asyncSnapshot.hasError) {
+                  return Text(asyncSnapshot.error.toString());
                 }
                 break;
             }
