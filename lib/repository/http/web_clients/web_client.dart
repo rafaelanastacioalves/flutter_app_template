@@ -1,9 +1,10 @@
 
 import 'dart:convert';
 
-import 'package:flutter_app_template/http/http_config.dart';
 import 'package:flutter_app_template/models/EntityDetails.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
+
+import '../http_config.dart';
 
 class WebClient {
 

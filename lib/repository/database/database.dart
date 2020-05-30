@@ -1,4 +1,4 @@
-import 'package:flutter_app_template/database/main_entity_dao.dart';
+import 'package:flutter_app_template/repository/database/main_entity_dao.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

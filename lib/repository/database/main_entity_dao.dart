@@ -1,6 +1,7 @@
-import 'package:flutter_app_template/database/database.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'database.dart';
 
 class DAO {
   static const main_entitiy_table_name = 'main_entity';
