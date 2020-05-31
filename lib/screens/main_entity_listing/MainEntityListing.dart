@@ -1,13 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
-import 'package:flutter_app_template/repository/http/web_clients/web_client.dart';
+import 'package:flutter_app_template/models/Resource.dart';
+import 'package:flutter_app_template/repository/Repository.dart';
 import 'package:flutter_app_template/screens/entity_detailing/EntityDetailing.dart';
 
 final _appBarTitle = "APP_NAME";
 
 class MainEntityListing extends StatelessWidget {
-  final httpClient = WebClient();
+  final appRepository = AppRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +19,10 @@ class MainEntityListing extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 8.0),
-        child: FutureBuilder<List<MainEntity>>(
-          initialData: List<MainEntity>(),
-          future: httpClient.getMainEntityList(),
-          builder: (buildContext, asyncSnapshotBuilder) {
-            switch (asyncSnapshotBuilder.connectionState) {
+        child: FutureBuilder<Resource<List<MainEntity>>>(
+          future: appRepository.getMainEntityList(),
+          builder: (buildContext, asyncSnapshot) {
+            switch (asyncSnapshot.connectionState) {
               case ConnectionState.none:
                 break;
               case ConnectionState.waiting:
@@ -30,21 +31,35 @@ class MainEntityListing extends StatelessWidget {
               case ConnectionState.active:
                 break;
               case ConnectionState.done:
-                if (asyncSnapshotBuilder.hasData) {
-                  final List<MainEntity> mainEntityList = asyncSnapshotBuilder.data;
-                  if (mainEntityList.isNotEmpty){
-                    return ListView.builder(
-                      itemBuilder: (context, index) {
-                        final mainEntity = mainEntityList[index];
-                        return MainEntityItem(mainEntity);
-                      },
-                      itemCount: mainEntityList.length,
-                    );
-                  }else{
-                    return Text("No Entity Found");
+                if (asyncSnapshot.hasData) {
+                  final Resource<List<MainEntity>> resource =
+                      asyncSnapshot.data;
+                  switch (resource.status) {
+                    case Status.SUCCESS:
+                      if (resource.data.isNotEmpty) {
+                        final mainEntityList = resource.data;
+                        return ListView.builder(
+                          itemBuilder: (context, index) {
+                            final mainEntity = mainEntityList[index];
+                            return MainEntityItem(mainEntity);
+                          },
+                          itemCount: mainEntityList.length,
+                        );
+                      }
+                      break;
+                    case Status.INTERNAL_SERVER_ERROR:
+                      return Text(resource.message);
+                      break;
+                    case Status.GENERIC_ERROR:
+                      return Text(resource.message.toString());
+                      break;
+                    case Status.LOADING:
+                      return Text(resource.message);
+                      break;
                   }
-                }else if (asyncSnapshotBuilder.hasError){
-                  return Text(asyncSnapshotBuilder.error.toString());
+                  ;
+                } else if (asyncSnapshot.hasError) {
+                  return Text(asyncSnapshot.error.toString());
                 }
                 break;
             }
@@ -54,6 +69,8 @@ class MainEntityListing extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 class LoadingScreen extends StatelessWidget {
@@ -92,8 +109,8 @@ class MainEntityItem extends StatelessWidget {
         child: Container(
           child: Column(
             children: <Widget>[
-              Image.network(
-                _mainEntity.image_url,
+              CachedNetworkImage(
+                imageUrl: _mainEntity.image_url
               ),
               Text(_mainEntity.title),
             ],

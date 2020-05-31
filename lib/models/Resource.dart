@@ -9,7 +9,7 @@ class Resource<T> {
   Resource.success(T this.data)
       : status = Status.SUCCESS;
 
-  Resource.error(Status this.status, {this.message,this.data});
+  Resource.error(Status this.status, {this.message = "Error" ,this.data});
 
   Resource.loading({this.message})
   : status = Status.LOADING;

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
 class HttpException implements Exception {
@@ -5,7 +6,7 @@ class HttpException implements Exception {
   final int code;
   final Response response;
 
-  HttpException(this.response)
+  HttpException({@required this.response})
   : body = response.body,
     code = response.statusCode;
 

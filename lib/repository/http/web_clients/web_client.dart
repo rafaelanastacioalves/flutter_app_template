@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter_app_template/models/EntityDetails.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
+import 'package:flutter_app_template/repository/http/HttpException.dart';
 
 import '../http_config.dart';
 
@@ -17,7 +18,7 @@ class WebClient {
       final List<dynamic> decodedJson = json.decode(response.body);
       return decodedJson.map((item) => MainEntity.fromJson(item)).toList();
     }else{
-      throw Exception("Http Exception");
+      throw HttpException(response: response);
     }
 
   }
@@ -31,7 +32,7 @@ class WebClient {
       final dynamic decodedJson = json.decode(response.body);
       return EntityDetails.fromJson(decodedJson);
     }else{
-      throw Exception("Http Exception");
+      throw HttpException(response: response);
     }
 
   }
