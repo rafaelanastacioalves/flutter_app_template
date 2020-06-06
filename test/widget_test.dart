@@ -6,25 +6,44 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:flutter_app_template/main.dart';
+import 'package:flutter_app_template/models/MainEntity.dart';
+import 'package:flutter_app_template/repository/database/main_entity_dao.dart';
+import 'package:flutter_app_template/repository/http/web_clients/web_client.dart';
+import 'package:flutter_app_template/screens/main_entity_listing/MainEntityListing.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(AppTemplate());
+  testWidgets('When Opening MainEntityList Should Show MainEntityList',
+      (WidgetTester tester) async {
+    final mockDAO = MockDAO();
+    final mockWebClient = MockWebClient();
+    final fakeList =
+        [MainEntity(id: '0', title: 'title', image_url: 'http')].toList();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    when(mockWebClient.getMainEntityList())
+        .thenAnswer((realInvocation) async => fakeList);
+    when(mockDAO.findAll()).thenAnswer((realInvocation) async => fakeList);
+    await tester
+        .pumpWidget(AppTemplate(webClient: mockWebClient, dAO: mockDAO));
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    final listView = find.byType(ListView);
+    final mainEntityItem = find.byWidgetPredicate((widget) {
+      if (widget is MainEntityItem) {
+        return widget.mainEntity ==
+            MainEntity(id: '0', title: 'title', image_url: 'http');
+      }
+      return false;
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    verify(mockDAO.findAll()).called(1);
+    expect(listView, findsOneWidget);
+    expect(mainEntityItem, findsOneWidget);
   });
 }
+
+class MockDAO extends Mock implements DAO {}
+
+class MockWebClient extends Mock implements WebClient {}

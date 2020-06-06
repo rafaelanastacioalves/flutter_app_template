@@ -1,18 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app_template/dependency_injection/app_dependencies.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
 import 'package:flutter_app_template/models/Resource.dart';
-import 'package:flutter_app_template/repository/Repository.dart';
 import 'package:flutter_app_template/screens/entity_detailing/EntityDetailing.dart';
 
 final _appBarTitle = "APP_NAME";
 
 class MainEntityListing extends StatelessWidget {
-  final appRepository = AppRepository();
 
   @override
   Widget build(BuildContext context) {
+    final appRepository = AppDependencies.of(context).appRepository;
     return Scaffold(
       appBar: AppBar(
         title: Text(_appBarTitle),
@@ -41,7 +41,7 @@ class MainEntityListing extends StatelessWidget {
                         return ListView.builder(
                           itemBuilder: (context, index) {
                             final mainEntity = mainEntityList[index];
-                            return MainEntityItem(mainEntity);
+                            return MainEntityItem(mainEntity: mainEntity);
                           },
                           itemCount: mainEntityList.length,
                         );
@@ -91,9 +91,9 @@ class LoadingScreen extends StatelessWidget {
 }
 
 class MainEntityItem extends StatelessWidget {
-  final MainEntity _mainEntity;
+  final MainEntity mainEntity;
 
-  MainEntityItem(this._mainEntity);
+  MainEntityItem({@required this.mainEntity});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class MainEntityItem extends StatelessWidget {
         child: InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return EntityDetaling(_mainEntity);
+          return EntityDetaling(mainEntity);
         }));
       },
       child: Padding(
@@ -110,9 +110,9 @@ class MainEntityItem extends StatelessWidget {
           child: Column(
             children: <Widget>[
               CachedNetworkImage(
-                imageUrl: _mainEntity.image_url
+                imageUrl: mainEntity.image_url
               ),
-              Text(_mainEntity.title),
+              Text(mainEntity.title),
             ],
           ),
         ),

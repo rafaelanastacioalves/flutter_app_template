@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_template/dependency_injection/app_dependencies.dart';
 import 'package:flutter_app_template/models/EntityDetails.dart';
 import 'package:flutter_app_template/models/MainEntity.dart';
 import 'package:flutter_app_template/models/Resource.dart';
@@ -11,10 +12,10 @@ class EntityDetaling extends StatelessWidget {
 
   final MainEntity _mainEntity;
 
-  final repository = AppRepository();
 
   @override
   Widget build(BuildContext context) {
+    var repository = AppDependencies.of(context).appRepository;
     return Scaffold(
       appBar: AppBar(
         title: Text(_mainEntity.title),

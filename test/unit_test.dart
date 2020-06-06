@@ -2,7 +2,7 @@ import 'package:flutter_app_template/models/MainEntity.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final mainEntitySample = MainEntity('test', '0', 'http');
+  final mainEntitySample = MainEntity(title: 'test', id: '0', image_url: 'http');
 
   test('Should return MainEntity When Created', () {
     expect(mainEntitySample.id, '0');
