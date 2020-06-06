@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_template/dependency_injection/app_dependencies.dart';
 import 'package:flutter_app_template/models/EntityDetails.dart';
@@ -79,10 +80,9 @@ class EntityDetaisScreen extends StatelessWidget {
             child: Container(
               child: Column(
                 children: <Widget>[
-                  Image.network(
-                    _entityDetails.image_url,
-                  ),
-                  Text(_entityDetails.title),
+                  CachedNetworkImage(
+                     imageUrl: _entityDetails.image_url),
+                  Text(_entityDetails.title, key: Key('EntityDetailTitleKey') ,),
                 ],
               ),
             ),

@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class EntityDetails {
   final String title;
   final String id;
@@ -19,4 +21,11 @@ class EntityDetails {
     'price_currency': price_currency,
     'image_url': image_url
   };
+
+  EntityDetails(
+      {@required this.title,
+      @required this.id,
+      @required this.price,
+      @required this.price_currency,
+      @required this.image_url});
 }
