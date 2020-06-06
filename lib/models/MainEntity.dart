@@ -13,4 +13,6 @@ class MainEntity {
         'title': title,
         'image_url': image_url
       };
+
+  MainEntity(this.title, this.id, this.image_url);
 }
