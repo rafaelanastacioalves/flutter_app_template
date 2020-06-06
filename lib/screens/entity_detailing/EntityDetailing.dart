@@ -67,6 +67,7 @@ class EntityDetaling extends StatelessWidget {
 }
 
 class EntityDetaisScreen extends StatelessWidget {
+  static const titleKey = Key('EntityDetailTitleKey');
   final EntityDetails _entityDetails;
 
   EntityDetaisScreen(this._entityDetails);
@@ -82,7 +83,7 @@ class EntityDetaisScreen extends StatelessWidget {
                 children: <Widget>[
                   CachedNetworkImage(
                      imageUrl: _entityDetails.image_url),
-                  Text(_entityDetails.title, key: Key('EntityDetailTitleKey') ,),
+                  Text(_entityDetails.title, key: titleKey ,),
                 ],
               ),
             ),

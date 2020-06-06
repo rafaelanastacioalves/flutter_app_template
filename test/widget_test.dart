@@ -17,17 +17,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
-  var mockedMainEntity = MainEntity(id: '0', title: 'title', image_url: 'http');
+  var genericEntityTitle = 'title';
+  final genericEntityId = '0';
+  final genericUrl = 'http';
+  var mockedMainEntity = MainEntity(
+      id: genericEntityId, title: genericEntityTitle, image_url: genericUrl);
+  final mockDAO = MockDAO();
+  final mockWebClient = MockWebClient();
+  final fakeList = [mockedMainEntity].toList();
 
   testWidgets('When Opening MainEntityList Should Show MainEntityList',
       (WidgetTester tester) async {
-    final mockDAO = MockDAO();
-    final mockWebClient = MockWebClient();
-    final fakeList = [mockedMainEntity].toList();
-
     when(mockWebClient.getMainEntityList())
         .thenAnswer((realInvocation) async => fakeList);
     when(mockDAO.findAll()).thenAnswer((realInvocation) async => fakeList);
+
     await tester
         .pumpWidget(AppTemplate(webClient: mockWebClient, dAO: mockDAO));
     await tester.pumpAndSettle();
@@ -47,13 +51,10 @@ void main() {
 
   testWidgets('When choosing a MainEntityItem Should show EntityDetails',
       (WidgetTester tester) async {
-    final mockDAO = MockDAO();
-    final mockWebClient = MockWebClient();
-    final fakeList = [mockedMainEntity].toList();
-
     when(mockWebClient.getMainEntityList())
         .thenAnswer((realInvocation) async => fakeList);
     when(mockDAO.findAll()).thenAnswer((realInvocation) async => fakeList);
+
     await tester
         .pumpWidget(AppTemplate(webClient: mockWebClient, dAO: mockDAO));
     await tester.pumpAndSettle();
@@ -65,11 +66,11 @@ void main() {
       return false;
     });
 
-    when(mockWebClient.getEntityDetail('0')).thenAnswer(
+    when(mockWebClient.getEntityDetail(genericEntityId)).thenAnswer(
         (realInvocation) async => EntityDetails(
-            image_url: 'http',
-            title: 'title',
-            id: '0',
+            image_url: genericUrl,
+            title: genericEntityTitle,
+            id: genericEntityId,
             price: '100',
             price_currency: '100'));
 
@@ -77,17 +78,17 @@ void main() {
     await tester.pumpAndSettle();
 
     final entityDetailScreen = find.byType(EntityDetaisScreen);
-    expect(entityDetailScreen, findsOneWidget);
-
     final textTitle = find.byWidgetPredicate((widget) {
       if (widget is Text) {
-        return widget.key == Key('EntityDetailTitleKey') &&
-            widget.data == 'title';
+        return widget.key == EntityDetaisScreen.titleKey &&
+            widget.data == genericEntityTitle;
       }
       return false;
     });
 
+    expect(entityDetailScreen, findsOneWidget);
     expect(textTitle, findsOneWidget);
+    verify(mockWebClient.getEntityDetail(genericEntityId)).called(1);
   });
 }
 
